@@ -24,10 +24,10 @@ class MLP:
         user_latent = keras.layers.Flatten()(user_embedding)
         item_latent = keras.layers.Flatten()(item_embedding)
 
-        # 5. concat : layer 0, size : layer [0]
+        # 4. concat : layer 0, size : layer [0]
         vector = keras.layers.Concatenate()([user_latent, item_latent])
 
-        # 6. Hidden Layers : 1 ~ num_layer
+        # 5. Hidden Layers : 1 ~ num_layer
         for index in range(num_layers):
             hidden_layer = keras.layers.Dense(
                             layers[index],
@@ -38,7 +38,7 @@ class MLP:
             vector = hidden_layer(vector)
 
         
-        # 7. Dense Layer
+        # 6. Dense Layer
         output = keras.layers.Dense(1,kernel_initializer=keras.initializers.lecun_uniform(),name="output")(vector)
 
         self.model = keras.Model(inputs=[user_input, item_input], outputs=[output])
