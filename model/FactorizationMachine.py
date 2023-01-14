@@ -95,6 +95,7 @@ class FactorizationMachine(keras.Model):
 
         for epoch in range(epochs):
             print("epoch : {} / {}".format(epoch + 1, epochs))
+            predicts = list()
             for step, (X_batch, y_batch) in enumerate(self.train_data):
                 with tf.GradientTape() as tape:
                     predict = self(X_batch)
@@ -114,6 +115,7 @@ class FactorizationMachine(keras.Model):
             
             for x_test, y_test in self.test_data:
                 prediction = self(x_test)
+                predicts.append(prediction)
                 self.test_acc_.update_state(y_test, prediction)
 
             print_status_bar(n_steps * self.batch_size, n_steps * self.batch_size, self.mean_loss_, metrics=self.metrics_)
@@ -122,6 +124,7 @@ class FactorizationMachine(keras.Model):
             for metric in [self.mean_loss_] + [self.test_acc_] + self.metrics_:
                 metric.reset_states()
         
+        self.predicts = predicts
 
         
 
