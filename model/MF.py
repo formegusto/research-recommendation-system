@@ -92,7 +92,7 @@ class MatrixFactorization:
         test_loss = 0
         for x, y in zip(xi, yi):
             test_loss += np.power(self.test_datas[x, y] - predicted[x, y], 2)
-        return np.sqrt(test_loss) / len(xi)
+        return np.sqrt(test_loss / len(xi))
 
     def loss(self):
         xi, yi = self.train_datas.nonzero()
@@ -100,4 +100,4 @@ class MatrixFactorization:
         test_loss = 0
         for x, y in zip(xi, yi):
             test_loss += np.power(self.train_datas[x, y] - predicted[x, y], 2)
-        return np.sqrt(test_loss) / len(xi)
+        return np.sqrt(test_loss / len(xi))
