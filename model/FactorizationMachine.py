@@ -70,6 +70,7 @@ class FactorizationMachine(keras.Model):
         self.loss_fn_ = keras.losses.binary_crossentropy
         self.mean_loss_ = keras.metrics.Mean()
         self.metrics_ = [keras.metrics.BinaryAccuracy()]
+        self.acc_ = keras.metrics.BinaryAccuracy()
         self.test_acc_ = keras.metrics.BinaryAccuracy()
 
     # *. predict function, keras.Model.call function ref.Factorization Machine Model Operation
@@ -92,6 +93,7 @@ class FactorizationMachine(keras.Model):
 
     def fit(self, epochs=10):
         n_steps = self.num_train // self.batch_size
+        history = list()
 
         for epoch in range(epochs):
             print("epoch : {} / {}".format(epoch + 1, epochs))
@@ -111,6 +113,8 @@ class FactorizationMachine(keras.Model):
                 for metric in self.metrics_:
                     metric(y_batch, predict)
 
+                self.acc_.update_state(y_batch,predict)
+
                 print_status_bar(step * self.batch_size, self.num_train, self.mean_loss_, metrics=self.metrics_)
             
             for x_test, y_test in self.test_data:
@@ -121,10 +125,13 @@ class FactorizationMachine(keras.Model):
             print_status_bar(n_steps * self.batch_size, n_steps * self.batch_size, self.mean_loss_, metrics=self.metrics_)
             print("검증 정확도: {}".format(self.test_acc_.result().numpy()))
 
+            history.append((self.acc_.result().numpy(), self.test_acc_.result().numpy()))
+
             for metric in [self.mean_loss_] + [self.test_acc_] + self.metrics_:
                 metric.reset_states()
         
         self.predicts = predicts
+        self.history = history
 
         
 
